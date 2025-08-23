@@ -5,8 +5,8 @@
 //  Created by Marc on 7/23/25.
 //
 
-import SwiftUI
 import Foundation
+import SwiftUI
 #if canImport(FoundationModels)
 import FoundationModels
 #endif
@@ -32,7 +32,7 @@ struct ContentView: View {
     @State private var errorMessage: String?
     @State private var filter: ViewFilter = .both
     @FocusState private var inputFocused: Bool
-    
+
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 16) {
@@ -55,7 +55,7 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
@@ -75,7 +75,11 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(LinearGradient(colors: [.blue.opacity(0.18), .purple.opacity(0.18)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .fill(LinearGradient(
+                    colors: [.blue.opacity(0.18), .purple.opacity(0.18)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ))
         )
         .overlay(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -107,7 +111,7 @@ struct ContentView: View {
             }
             .buttonStyle(.borderedProminent)
             .disabled(foodIdea.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoading)
-            if let errorMessage = errorMessage {
+            if let errorMessage {
                 Text(errorMessage)
                     .font(.footnote)
                     .foregroundColor(.red)
@@ -126,7 +130,7 @@ struct ContentView: View {
 
     private var checklistCard: some View {
         Group {
-            if ingredientItems.isEmpty && stepItems.isEmpty {
+            if ingredientItems.isEmpty, stepItems.isEmpty {
                 EmptyStateView()
             } else {
                 List {
@@ -162,7 +166,7 @@ struct ContentView: View {
         errorMessage = nil
         ingredientItems = []
         stepItems = []
-        
+
         let instructions = """
         You are a helpful and knowledgeable chef. Given a food idea, generate a detailed recipe with ingredients followed by concise step-by-step instructions.
         OUTPUT FORMAT (strict):
@@ -176,7 +180,7 @@ struct ContentView: View {
         - Keep each item on one line.
         """
         let prompt = foodIdea
-        
+
         // Use Foundation Models API (iOS 18+)
         if #available(iOS 18.0, *) {
             #if canImport(FoundationModels)
@@ -186,11 +190,12 @@ struct ContentView: View {
                     let result = try await session.respond(to: Prompt(prompt))
                     let text = result.content
                     var (ings, steps) = RecipeParser.parseRecipeSections(from: text)
-                    if ings.isEmpty && steps.isEmpty {
+                    if ings.isEmpty, steps.isEmpty {
                         // Fallback: treat the whole text as flat list to show something meaningful
                         let flat = RecipeParser.parseRecipeItems(from: text).map { RecipeItem(text: $0) }
                         if flat.isEmpty {
-                            throw NSError(domain: "Recipe", code: -1, userInfo: [NSLocalizedDescriptionKey: "No items returned by model"]) }
+                            throw NSError(domain: "Recipe", code: -1, userInfo: [NSLocalizedDescriptionKey: "No items returned by model"])
+                        }
                         // Heuristically split: first half ingredients, second half steps
                         let mid = max(1, flat.count / 2)
                         ings = Array(flat.prefix(mid))

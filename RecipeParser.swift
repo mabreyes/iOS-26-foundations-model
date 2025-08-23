@@ -48,7 +48,12 @@ enum RecipeParser {
             stepsBlock = parts[1...].joined(separator: "\n")
         } else {
             let lines = text.components(separatedBy: .newlines)
-            if let idx = lines.firstIndex(where: { $0.lowercased().trimmingCharacters(in: .whitespaces).hasPrefix("instruction") || $0.lowercased().trimmingCharacters(in: .whitespaces).hasPrefix("direction") }) {
+            if let idx = lines
+                .firstIndex(where: {
+                    $0.lowercased().trimmingCharacters(in: .whitespaces).hasPrefix("instruction") || $0.lowercased()
+                        .trimmingCharacters(in: .whitespaces).hasPrefix("direction")
+                })
+            {
                 ingredientsBlock = lines[..<idx].joined(separator: "\n")
                 stepsBlock = lines[idx...].joined(separator: "\n")
             } else {
@@ -62,5 +67,3 @@ enum RecipeParser {
         return (ingredients, steps)
     }
 }
-
-

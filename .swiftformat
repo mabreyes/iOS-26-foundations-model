@@ -1,0 +1,10 @@
+--indent 4
+--maxwidth 140
+--wraparguments before-first
+--wrapcollections before-first
+--commas inline
+--hexgrouping 4,8
+--ifdef no-indent
+--stripunusedargs closure-only
+--disable redundantSelf
+--swiftversion 5.9
