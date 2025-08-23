@@ -19,7 +19,8 @@ struct RecipeItem: Identifiable {
 
 struct ContentView: View {
     @State private var foodIdea: String = ""
-    @State private var recipeItems: [RecipeItem] = []
+    @State private var ingredientItems: [RecipeItem] = []
+    @State private var stepItems: [RecipeItem] = []
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
     
@@ -44,13 +45,30 @@ struct ContentView: View {
                     .foregroundColor(.red)
             }
             List {
-                ForEach($recipeItems) { $item in
-                    HStack {
-                        Button(action: { item.isChecked.toggle() }) {
-                            Image(systemName: item.isChecked ? "checkmark.square" : "square")
+                if !ingredientItems.isEmpty {
+                    Section("Ingredients") {
+                        ForEach($ingredientItems) { $item in
+                            HStack {
+                                Button(action: { item.isChecked.toggle() }) {
+                                    Image(systemName: item.isChecked ? "checkmark.square" : "square")
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                Text(item.text)
+                            }
                         }
-                        .buttonStyle(PlainButtonStyle())
-                        Text(item.text)
+                    }
+                }
+                if !stepItems.isEmpty {
+                    Section("Steps") {
+                        ForEach($stepItems) { $item in
+                            HStack {
+                                Button(action: { item.isChecked.toggle() }) {
+                                    Image(systemName: item.isChecked ? "checkmark.square" : "square")
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                Text(item.text)
+                            }
+                        }
                     }
                 }
             }
@@ -58,14 +76,93 @@ struct ContentView: View {
         .padding()
     }
     
+    private func parseRecipeItems(from text: String) -> [RecipeItem] {
+        let separators = CharacterSet.newlines
+        let rawLines = text.components(separatedBy: separators)
+        let cleaned: [String] = rawLines
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+            .map { line in
+                var l = line
+                // Strip common markdown bullets and numbering
+                let patterns: [String] = [
+                    "^[-*•‣◦]\\s+",            // bullets: -, *, •, ‣, ◦
+                    "^\\d+\\.\\s+",           // 1. item
+                    "^\\(\\d+\\)\\s+",       // (1) item
+                    "^#+\\s+",                 // markdown headings
+                    "^[☐✅❌]\\s*"              // checkboxes and marks
+                ]
+                for pattern in patterns {
+                    if let regex = try? NSRegularExpression(pattern: pattern, options: []) {
+                        l = regex.stringByReplacingMatches(in: l, options: [], range: NSRange(location: 0, length: l.utf16.count), withTemplate: "")
+                    }
+                }
+                return l.trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+            // Remove generic intro lines and section titles
+            .filter { line in
+                let lower = line.lowercased()
+                let bannedPrefixes = [
+                    "sure!", "here's", "here is", "recipe:",
+                    "ingredients", "for the cupcakes", "instructions", "directions"
+                ]
+                if bannedPrefixes.contains(where: { lower.hasPrefix($0) }) { return false }
+                // Remove bare section headers
+                if ["ingredients", "instructions", "directions"].contains(lower) { return false }
+                return true
+            }
+        return cleaned.map { RecipeItem(text: $0) }
+    }
+
+    private func parseRecipeSections(from text: String) -> ([RecipeItem], [RecipeItem]) {
+        // Collapse wrapped lines: if a line ends with a comma or semicolon, keep as is; otherwise, treat each line as an item.
+        // Split sections by strict delimiter `---`. If missing, fall back to heuristic split.
+        let parts = text
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .components(separatedBy: "\n---\n")
+
+        let ingredientsBlock: String
+        let stepsBlock: String
+
+        if parts.count >= 2 {
+            ingredientsBlock = parts[0]
+            stepsBlock = parts[1...].joined(separator: "\n")
+        } else {
+            // Heuristic: try to find a transition line like "instructions" or "directions"
+            let lines = text.components(separatedBy: .newlines)
+            if let idx = lines.firstIndex(where: { $0.lowercased().trimmingCharacters(in: .whitespaces).hasPrefix("instruction") || $0.lowercased().trimmingCharacters(in: .whitespaces).hasPrefix("direction") }) {
+                ingredientsBlock = lines[..<idx].joined(separator: "\n")
+                stepsBlock = lines[idx...].joined(separator: "\n")
+            } else {
+                // If no clue, treat entire text as a single list
+                let items = parseRecipeItems(from: text)
+                return (items, [])
+            }
+        }
+
+        let ingredientItems = parseRecipeItems(from: ingredientsBlock)
+        let stepItems = parseRecipeItems(from: stepsBlock)
+        return (ingredientItems, stepItems)
+    }
+
     func generateRecipe() {
         guard !foodIdea.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         isLoading = true
         errorMessage = nil
-        recipeItems = []
+        ingredientItems = []
+        stepItems = []
         
         let instructions = """
-        You are a helpful and knowledgeable chef. Given a food idea, generate a detailed, step-by-step recipe with ingredients and instructions. Be informative and comprehensive. Present the recipe as a list, each step or ingredient as a separate item.
+        You are a helpful and knowledgeable chef. Given a food idea, generate a detailed recipe with ingredients followed by concise step-by-step instructions.
+        OUTPUT FORMAT (strict):
+        - First list all ingredients, ONE per line.
+        - Then output a SINGLE delimiter line containing exactly: ---
+        - Then list all steps, ONE per line.
+        HARD CONSTRAINTS:
+        - No introductions, headings, section titles, categories, or notes.
+        - No Markdown (no #, *, -, •), no numbering, and no checkboxes.
+        - Do not prefix items with punctuation or emojis.
+        - Keep each item on one line.
         """
         let prompt = foodIdea
         
@@ -77,9 +174,10 @@ struct ContentView: View {
                     let session = LanguageModelSession(instructions: Instructions(instructions))
                     let result = try await session.respond(to: Prompt(prompt))
                     let text = result.content
-                    let lines = text.components(separatedBy: "\n").filter { !$0.trimmingCharacters(in: CharacterSet.whitespaces).isEmpty }
+                    let (ings, steps) = self.parseRecipeSections(from: text)
                     await MainActor.run {
-                        self.recipeItems = lines.map { RecipeItem(text: $0) }
+                        self.ingredientItems = ings
+                        self.stepItems = steps
                         self.isLoading = false
                     }
                 } catch {
