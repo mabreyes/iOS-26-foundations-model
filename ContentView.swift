@@ -178,6 +178,10 @@ struct ContentView: View {
         - No Markdown (no #, *, -, •), no numbering, and no checkboxes.
         - Do not prefix items with punctuation or emojis.
         - Keep each item on one line.
+        SAFETY REQUIREMENTS:
+        - Only provide benign, non-harmful cooking guidance appropriate for general audiences.
+        - Avoid hazardous, violent, or explicit language; keep tone neutral and safety‑conscious.
+        - If a requested item is unsafe, substitute a safe culinary alternative.
         """
         let prompt = foodIdea
 
@@ -185,33 +189,7 @@ struct ContentView: View {
         if #available(iOS 18.0, *) {
             #if canImport(FoundationModels)
             Task {
-                do {
-                    let session = LanguageModelSession(instructions: Instructions(instructions))
-                    let result = try await session.respond(to: Prompt(prompt))
-                    let text = result.content
-                    var (ings, steps) = RecipeParser.parseRecipeSections(from: text)
-                    if ings.isEmpty, steps.isEmpty {
-                        // Fallback: treat the whole text as flat list to show something meaningful
-                        let flat = RecipeParser.parseRecipeItems(from: text).map { RecipeItem(text: $0) }
-                        if flat.isEmpty {
-                            throw NSError(domain: "Recipe", code: -1, userInfo: [NSLocalizedDescriptionKey: "No items returned by model"])
-                        }
-                        // Heuristically split: first half ingredients, second half steps
-                        let mid = max(1, flat.count / 2)
-                        ings = Array(flat.prefix(mid))
-                        steps = Array(flat.suffix(from: mid))
-                    }
-                    await MainActor.run {
-                        self.ingredientItems = ings
-                        self.stepItems = steps
-                        self.isLoading = false
-                    }
-                } catch {
-                    await MainActor.run {
-                        self.errorMessage = "Failed to generate recipe: \(error.localizedDescription)"
-                        self.isLoading = false
-                    }
-                }
+                await requestRecipe(with: prompt, instructions: instructions, attempt: 0)
             }
             #else
             self.errorMessage = "This feature requires the FoundationModels framework (iOS 18+)."
@@ -221,6 +199,50 @@ struct ContentView: View {
             self.errorMessage = "This feature requires iOS 18 or later and a supported device."
             self.isLoading = false
         }
+    }
+
+    @available(iOS 18.0, *)
+    private func requestRecipe(with prompt: String, instructions: String, attempt: Int) async {
+        #if canImport(FoundationModels)
+        do {
+            let session = LanguageModelSession(instructions: Instructions(instructions))
+            let result = try await session.respond(to: Prompt(prompt))
+            let text = result.content
+            var (ings, steps) = RecipeParser.parseRecipeSections(from: text)
+            if ings.isEmpty, steps.isEmpty {
+                let flat = RecipeParser.parseRecipeItems(from: text).map { RecipeItem(text: $0) }
+                if flat.isEmpty {
+                    throw NSError(domain: "Recipe", code: -1, userInfo: [NSLocalizedDescriptionKey: "No items returned by model"])
+                }
+                let mid = max(1, flat.count / 2)
+                ings = Array(flat.prefix(mid))
+                steps = Array(flat.suffix(from: mid))
+            }
+            await MainActor.run {
+                self.ingredientItems = ings
+                self.stepItems = steps
+                self.isLoading = false
+            }
+        } catch {
+            let lower = error.localizedDescription.lowercased()
+            if attempt == 0, lower.contains("unsafe") || lower.contains("safety") || lower.contains("sensitive") {
+                let safer = instructions + "\n" + """
+                STRICT SAFETY: Keep content universally safe. Do not include hazardous activities; phrase cutting/slicing as careful, standard culinary technique.
+                """.trimmingCharacters(in: .whitespacesAndNewlines)
+                await requestRecipe(with: prompt, instructions: safer, attempt: attempt + 1)
+                return
+            }
+            await MainActor.run {
+                self.errorMessage = "Failed to generate recipe: \(error.localizedDescription)"
+                self.isLoading = false
+            }
+        }
+        #else
+        await MainActor.run {
+            self.errorMessage = "This feature requires the FoundationModels framework (iOS 18+)."
+            self.isLoading = false
+        }
+        #endif
     }
 
     private func clearAll() {
