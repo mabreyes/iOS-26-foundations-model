@@ -22,7 +22,7 @@ struct ContentView: View {
                 checklistCard
             }
             .padding()
-            .navigationTitle("AI Recipe Generator")
+            .navigationTitle("Recipe Assistant ")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .keyboard) {
