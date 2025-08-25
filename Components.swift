@@ -14,6 +14,20 @@ struct ChecklistRow: View {
     }
 }
 
+struct DeletableChecklistRow: View {
+    @Binding var item: RecipeItem
+    let kind: RecipeSectionKind
+    let onRequestDelete: (_ kind: RecipeSectionKind, _ id: UUID) -> Void
+    var body: some View {
+        ChecklistRow(item: $item)
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                Button("Delete", role: .destructive) {
+                    onRequestDelete(kind, item.id)
+                }
+            }
+    }
+}
+
 struct EmptyStateView: View {
     var body: some View {
         VStack(spacing: 12) {

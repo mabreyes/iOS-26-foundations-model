@@ -16,3 +16,8 @@ enum ViewFilter: String, CaseIterable, Identifiable {
 extension ViewFilter: CustomStringConvertible {
     var description: String { rawValue }
 }
+
+enum RecipeSectionKind {
+    case ingredient
+    case step
+}

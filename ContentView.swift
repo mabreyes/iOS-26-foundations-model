@@ -1,14 +1,5 @@
-//
-//  ContentView.swift
-//  ios-foundations
-//
-//  Created by Marc on 7/23/25.
-//
-
 import Foundation
 import SwiftUI
-
-// Models moved to Models.swift
 
 struct ContentView: View {
     @State private var foodIdea: String = ""
@@ -20,9 +11,7 @@ struct ContentView: View {
     @FocusState private var inputFocused: Bool
     @State private var showDeleteConfirm: Bool = false
     @State private var showDeleteItemConfirm: Bool = false
-    @State private var pendingDelete: (kind: SectionKind, id: UUID)?
-
-    private enum SectionKind { case ingredient, step }
+    @State private var pendingDelete: (kind: RecipeSectionKind, id: UUID)?
 
     var body: some View {
         NavigationStack {
@@ -142,13 +131,10 @@ struct ContentView: View {
                         if !ingredientItems.isEmpty {
                             Section("Ingredients") {
                                 ForEach($ingredientItems) { $item in
-                                    ChecklistRow(item: $item)
-                                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                            Button("Delete", role: .destructive) {
-                                                pendingDelete = (.ingredient, item.id)
-                                                showDeleteItemConfirm = true
-                                            }
-                                        }
+                                    DeletableChecklistRow(item: $item, kind: .ingredient) { kind, id in
+                                        pendingDelete = (kind, id)
+                                        showDeleteItemConfirm = true
+                                    }
                                 }
                             }
                         }
@@ -157,13 +143,10 @@ struct ContentView: View {
                         if !stepItems.isEmpty {
                             Section("Steps") {
                                 ForEach($stepItems) { $item in
-                                    ChecklistRow(item: $item)
-                                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                            Button("Delete", role: .destructive) {
-                                                pendingDelete = (.step, item.id)
-                                                showDeleteItemConfirm = true
-                                            }
-                                        }
+                                    DeletableChecklistRow(item: $item, kind: .step) { kind, id in
+                                        pendingDelete = (kind, id)
+                                        showDeleteItemConfirm = true
+                                    }
                                 }
                             }
                         }
@@ -183,7 +166,6 @@ struct ContentView: View {
         ingredientItems = []
         stepItems = []
 
-        // Generate via service
         Task {
             do {
                 if #available(iOS 18.0, *) {
@@ -233,5 +215,3 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
-
-// Components moved to Components.swift
