@@ -61,11 +61,7 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(LinearGradient(
-                    colors: [.blue.opacity(0.18), .purple.opacity(0.18)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                ))
+                .fill(AITheme.gradient.opacity(0.20))
         )
         .overlay(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -95,7 +91,7 @@ struct ContentView: View {
                 Label(isLoading ? "Generating" : "Generate Recipe", systemImage: isLoading ? "hourglass" : "wand.and.stars")
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(GradientButtonStyle())
             .disabled(foodIdea.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoading)
             if let errorMessage {
                 Text(errorMessage)

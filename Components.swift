@@ -32,28 +32,37 @@ struct EmptyStateView: View {
 struct LoadingListPlaceholder: View {
     var body: some View {
         List {
-            ForEach(0 ..< 3, id: \.self) { _ in
-                Section("") {
-                    ForEach(0 ..< 3, id: \.self) { _ in
-                        HStack(spacing: 12) {
-                            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                .fill(Color.secondary.opacity(0.2))
-                                .frame(width: 24, height: 24)
-                            VStack(alignment: .leading, spacing: 8) {
-                                RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                    .fill(Color.secondary.opacity(0.2))
-                                    .frame(height: 12)
-                                RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                    .fill(Color.secondary.opacity(0.2))
-                                    .frame(width: 180, height: 12)
-                                    .opacity(0.8)
-                            }
-                        }
-                        .redacted(reason: .placeholder)
-                    }
+            Section("Ingredients") {
+                ForEach(0 ..< 4, id: \.self) { _ in
+                    SkeletonChecklistRow()
+                }
+            }
+            Section("Steps") {
+                ForEach(0 ..< 4, id: \.self) { _ in
+                    SkeletonChecklistRow()
                 }
             }
         }
         .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+    }
+}
+
+struct SkeletonChecklistRow: View {
+    var body: some View {
+        HStack(spacing: 12) {
+            Circle()
+                .fill(Color.secondary.opacity(0.18))
+                .frame(width: 24, height: 24)
+            VStack(alignment: .leading, spacing: 8) {
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .fill(Color.secondary.opacity(0.22))
+                    .frame(height: 14)
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .fill(Color.secondary.opacity(0.18))
+                    .frame(width: 220, height: 12)
+            }
+        }
+        .redacted(reason: .placeholder)
     }
 }
