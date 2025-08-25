@@ -7,22 +7,8 @@
 
 import Foundation
 import SwiftUI
-#if canImport(FoundationModels)
-import FoundationModels
-#endif
 
-struct RecipeItem: Identifiable {
-    let id = UUID()
-    let text: String
-    var isChecked: Bool = false
-}
-
-enum ViewFilter: String, CaseIterable, Identifiable {
-    case both = "Both"
-    case ingredients = "Ingredients"
-    case steps = "Steps"
-    var id: String { rawValue }
-}
+// Models moved to Models.swift
 
 struct ContentView: View {
     @State private var foodIdea: String = ""
@@ -106,7 +92,7 @@ struct ContentView: View {
                     .fill(Color(.secondarySystemBackground))
             )
             Button(action: generateRecipe) {
-                Label("Generate Recipe", systemImage: "wand.and.stars")
+                Label(isLoading ? "Generating" : "Generate Recipe", systemImage: isLoading ? "hourglass" : "wand.and.stars")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
@@ -130,7 +116,9 @@ struct ContentView: View {
 
     private var checklistCard: some View {
         Group {
-            if ingredientItems.isEmpty, stepItems.isEmpty {
+            if isLoading {
+                LoadingListPlaceholder()
+            } else if ingredientItems.isEmpty, stepItems.isEmpty {
                 EmptyStateView()
             } else {
                 List {
@@ -167,82 +155,29 @@ struct ContentView: View {
         ingredientItems = []
         stepItems = []
 
-        let instructions = """
-        You are a helpful and knowledgeable chef. Given a food idea, generate a detailed recipe with ingredients followed by concise step-by-step instructions.
-        OUTPUT FORMAT (strict):
-        - First list all ingredients, ONE per line.
-        - Then output a SINGLE delimiter line containing exactly: ---
-        - Then list all steps, ONE per line.
-        HARD CONSTRAINTS:
-        - No introductions, headings, section titles, categories, or notes.
-        - No Markdown (no #, *, -, •), no numbering, and no checkboxes.
-        - Do not prefix items with punctuation or emojis.
-        - Keep each item on one line.
-        SAFETY REQUIREMENTS:
-        - Only provide benign, non-harmful cooking guidance appropriate for general audiences.
-        - Avoid hazardous, violent, or explicit language; keep tone neutral and safety‑conscious.
-        - If a requested item is unsafe, substitute a safe culinary alternative.
-        """
-        let prompt = foodIdea
-
-        // Use Foundation Models API (iOS 18+)
-        if #available(iOS 18.0, *) {
-            #if canImport(FoundationModels)
-            Task {
-                await requestRecipe(with: prompt, instructions: instructions, attempt: 0)
-            }
-            #else
-            self.errorMessage = "This feature requires the FoundationModels framework (iOS 18+)."
-            self.isLoading = false
-            #endif
-        } else {
-            self.errorMessage = "This feature requires iOS 18 or later and a supported device."
-            self.isLoading = false
-        }
-    }
-
-    @available(iOS 18.0, *)
-    private func requestRecipe(with prompt: String, instructions: String, attempt: Int) async {
-        #if canImport(FoundationModels)
-        do {
-            let session = LanguageModelSession(instructions: Instructions(instructions))
-            let result = try await session.respond(to: Prompt(prompt))
-            let text = result.content
-            var (ings, steps) = RecipeParser.parseRecipeSections(from: text)
-            if ings.isEmpty, steps.isEmpty {
-                let flat = RecipeParser.parseRecipeItems(from: text).map { RecipeItem(text: $0) }
-                if flat.isEmpty {
-                    throw NSError(domain: "Recipe", code: -1, userInfo: [NSLocalizedDescriptionKey: "No items returned by model"])
+        // Generate via service
+        Task {
+            do {
+                if #available(iOS 18.0, *) {
+                    let (ings, steps) = try await RecipeGenerator.generate(for: foodIdea)
+                    await MainActor.run {
+                        self.ingredientItems = ings
+                        self.stepItems = steps
+                        self.isLoading = false
+                    }
+                } else {
+                    await MainActor.run {
+                        self.errorMessage = "This feature requires iOS 18 or later and a supported device."
+                        self.isLoading = false
+                    }
                 }
-                let mid = max(1, flat.count / 2)
-                ings = Array(flat.prefix(mid))
-                steps = Array(flat.suffix(from: mid))
-            }
-            await MainActor.run {
-                self.ingredientItems = ings
-                self.stepItems = steps
-                self.isLoading = false
-            }
-        } catch {
-            let lower = error.localizedDescription.lowercased()
-            if attempt == 0, lower.contains("unsafe") || lower.contains("safety") || lower.contains("sensitive") {
-                let safer = instructions + "\n" + """
-                STRICT SAFETY: Keep content universally safe. Do not include hazardous activities; phrase cutting/slicing as careful, standard culinary technique.
-                """.trimmingCharacters(in: .whitespacesAndNewlines)
-                await requestRecipe(with: prompt, instructions: safer, attempt: attempt + 1)
-                return
-            }
-            await MainActor.run {
-                self.errorMessage = "Failed to generate recipe: \(error.localizedDescription)"
-                self.isLoading = false
+            } catch {
+                await MainActor.run {
+                    self.errorMessage = "Failed to generate recipe: \(error.localizedDescription)"
+                    self.isLoading = false
+                }
             }
         }
-        #else
-        await MainActor.run {
-            self.errorMessage = "This feature requires the FoundationModels framework (iOS 18+)."
-            self.isLoading = false
-        }
-        #endif
     }
 
     private func clearAll() {
@@ -256,33 +191,4 @@ struct ContentView: View {
     ContentView()
 }
 
-// MARK: - Components
-
-struct ChecklistRow: View {
-    @Binding var item: RecipeItem
-    var body: some View {
-        HStack(spacing: 12) {
-            Button(action: { item.isChecked.toggle() }) {
-                Image(systemName: item.isChecked ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(item.isChecked ? .green : .secondary)
-            }
-            .buttonStyle(.plain)
-            Text(item.text)
-        }
-    }
-}
-
-struct EmptyStateView: View {
-    var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "list.bullet.rectangle.portrait")
-                .font(.system(size: 44))
-                .foregroundStyle(.secondary)
-            Text("Your recipe will appear here")
-                .font(.callout)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 24)
-    }
-}
+// Components moved to Components.swift
