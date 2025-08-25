@@ -12,3 +12,7 @@ enum ViewFilter: String, CaseIterable, Identifiable {
     case steps = "Steps"
     var id: String { rawValue }
 }
+
+extension ViewFilter: CustomStringConvertible {
+    var description: String { rawValue }
+}

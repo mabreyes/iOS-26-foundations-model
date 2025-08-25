@@ -18,6 +18,11 @@ struct ContentView: View {
     @State private var errorMessage: String?
     @State private var filter: ViewFilter = .both
     @FocusState private var inputFocused: Bool
+    @State private var showDeleteConfirm: Bool = false
+    @State private var showDeleteItemConfirm: Bool = false
+    @State private var pendingDelete: (kind: SectionKind, id: UUID)?
+
+    private enum SectionKind { case ingredient, step }
 
     var body: some View {
         NavigationStack {
@@ -35,9 +40,29 @@ struct ContentView: View {
                     Button("Done") { inputFocused = false }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(role: .destructive) { clearAll() } label: { Image(systemName: "trash") }
+                    Button(role: .destructive) { showDeleteConfirm = true } label: { Image(systemName: "trash") }
                         .disabled(ingredientItems.isEmpty && stepItems.isEmpty)
                 }
+            }
+            .confirmationDialog(
+                "Delete all items?",
+                isPresented: $showDeleteConfirm,
+                titleVisibility: .visible
+            ) {
+                Button("Delete All", role: .destructive) { clearAll() }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This will remove all generated ingredients and steps.")
+            }
+            .confirmationDialog(
+                "Delete this item?",
+                isPresented: $showDeleteItemConfirm,
+                titleVisibility: .visible
+            ) {
+                Button("Delete", role: .destructive) { deletePendingItem() }
+                Button("Cancel", role: .cancel) { pendingDelete = nil }
+            } message: {
+                Text("This will remove the selected item from the list.")
             }
         }
     }
@@ -102,12 +127,7 @@ struct ContentView: View {
     }
 
     private var filterPicker: some View {
-        Picker("View", selection: $filter) {
-            ForEach(ViewFilter.allCases) { f in
-                Text(f.rawValue).tag(f)
-            }
-        }
-        .pickerStyle(.segmented)
+        AIPillTabs<ViewFilter>(selection: $filter)
     }
 
     private var checklistCard: some View {
@@ -123,6 +143,12 @@ struct ContentView: View {
                             Section("Ingredients") {
                                 ForEach($ingredientItems) { $item in
                                     ChecklistRow(item: $item)
+                                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                            Button("Delete", role: .destructive) {
+                                                pendingDelete = (.ingredient, item.id)
+                                                showDeleteItemConfirm = true
+                                            }
+                                        }
                                 }
                             }
                         }
@@ -132,6 +158,12 @@ struct ContentView: View {
                             Section("Steps") {
                                 ForEach($stepItems) { $item in
                                     ChecklistRow(item: $item)
+                                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                            Button("Delete", role: .destructive) {
+                                                pendingDelete = (.step, item.id)
+                                                showDeleteItemConfirm = true
+                                            }
+                                        }
                                 }
                             }
                         }
@@ -180,6 +212,21 @@ struct ContentView: View {
         ingredientItems = []
         stepItems = []
         errorMessage = nil
+    }
+
+    private func deletePendingItem() {
+        guard let pending = pendingDelete else { return }
+        switch pending.kind {
+        case .ingredient:
+            if let idx = ingredientItems.firstIndex(where: { $0.id == pending.id }) {
+                ingredientItems.remove(at: idx)
+            }
+        case .step:
+            if let idx = stepItems.firstIndex(where: { $0.id == pending.id }) {
+                stepItems.remove(at: idx)
+            }
+        }
+        pendingDelete = nil
     }
 }
 

@@ -66,3 +66,36 @@ struct SkeletonChecklistRow: View {
         .redacted(reason: .placeholder)
     }
 }
+
+struct AIPillTabs<T: Hashable & CaseIterable & Identifiable & CustomStringConvertible>: View {
+    @Binding var selection: T
+    var body: some View {
+        HStack(spacing: 6) {
+            ForEach(Array(T.allCases)) { tab in
+                let isSelected = tab == selection
+                Button(action: { selection = tab }) {
+                    Text(tab.description)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(isSelected ? .primary : .secondary)
+                        .padding(.vertical, 10)
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            ZStack {
+                                if isSelected {
+                                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                        .fill(.background)
+                                        .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
+                                }
+                            }
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(6)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(AITheme.gradient.opacity(0.15))
+        )
+    }
+}
