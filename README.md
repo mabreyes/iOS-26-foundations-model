@@ -1,11 +1,6 @@
 # Receipt AI Generator with Apple Foundation Models
 
-A SwiftUI app that turns grocery receipts into structured ingredients and recipe suggestions with Apple Foundation Models.
-
-- Parse receipt text/items into structured data
-- Generate and refine recipes based on detected ingredients
-- SwiftUI UI with pre-commit hooks (SwiftFormat, SwiftLint)
-- Optional Live Activities/Dynamic Island widgets for cooking progress
+A SwiftUI app that turns a food idea into structured ingredients and recipe suggestions with Apple Foundation Models.
 
 See Apple's documentation: [Apple Foundation Models](https://developer.apple.com/documentation/FoundationModels).
 
