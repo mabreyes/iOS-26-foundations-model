@@ -310,7 +310,26 @@ struct ContentView: View {
 
     private func updateLiveActivityIfNeeded(pct: Double, title: String) async {
         guard liveActivity != nil else { return }
-        await RecipeLiveActivityManager.update(activity: liveActivity, title: title.isEmpty ? "Recipe Progress" : title, progress: pct)
+        let currentChecked: String? = {
+            let all = (ingredientItems + stepItems)
+                .map { $0 }
+                .filter { !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+            // Prefer the most recently checked item
+            if let last = all.last(where: { $0.isChecked }) {
+                return last.text
+            }
+            // Otherwise, the next unchecked item as a hint
+            if let next = all.first(where: { !$0.isChecked }) {
+                return next.text
+            }
+            return nil
+        }()
+        await RecipeLiveActivityManager.update(
+            activity: liveActivity,
+            title: title.isEmpty ? "Recipe Progress" : title,
+            progress: pct,
+            currentItem: currentChecked
+        )
     }
 
     private func endLiveActivityIfNeeded() async {
