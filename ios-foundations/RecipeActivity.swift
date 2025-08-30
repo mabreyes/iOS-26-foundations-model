@@ -11,6 +11,7 @@ struct RecipeActivityAttributes: Codable, Hashable {
     struct ContentState: Codable, Hashable {
         var title: String
         var progress: Double
+        var currentItem: String?
     }
 
     var title: String
@@ -26,7 +27,7 @@ enum RecipeLiveActivityManager {
         #if canImport(ActivityKit)
         if #available(iOS 16.2, *) {
             let attributes = RecipeActivityAttributes(title: title)
-            let state = RecipeActivityAttributes.ContentState(title: title, progress: progress)
+            let state = RecipeActivityAttributes.ContentState(title: title, progress: progress, currentItem: nil)
             let content = ActivityContent(state: state, staleDate: nil)
 
             let authInfo = ActivityAuthorizationInfo()
@@ -48,7 +49,7 @@ enum RecipeLiveActivityManager {
         } else {
             if #available(iOS 16.1, *) {
                 let attributes = RecipeActivityAttributes(title: title)
-                let state = RecipeActivityAttributes.ContentState(title: title, progress: progress)
+                let state = RecipeActivityAttributes.ContentState(title: title, progress: progress, currentItem: nil)
 
                 let authInfo = ActivityAuthorizationInfo()
                 print("🔴 Live Activity Authorization Status: \(authInfo.areActivitiesEnabled)")
@@ -72,10 +73,10 @@ enum RecipeLiveActivityManager {
         return nil
     }
 
-    static func update(activity: Any?, title: String, progress: Double) async {
+    static func update(activity: Any?, title: String, progress: Double, currentItem: String?) async {
         #if canImport(ActivityKit)
         if #available(iOS 16.2, *), let act = activity as? Activity<RecipeActivityAttributes> {
-            let state = RecipeActivityAttributes.ContentState(title: title, progress: progress)
+            let state = RecipeActivityAttributes.ContentState(title: title, progress: progress, currentItem: currentItem)
             let content = ActivityContent(state: state, staleDate: nil)
             do {
                 await act.update(content)
@@ -85,7 +86,7 @@ enum RecipeLiveActivityManager {
             }
         } else {
             if #available(iOS 16.1, *), let act = activity as? Activity<RecipeActivityAttributes> {
-                let state = RecipeActivityAttributes.ContentState(title: title, progress: progress)
+                let state = RecipeActivityAttributes.ContentState(title: title, progress: progress, currentItem: currentItem)
                 do {
                     await act.update(using: state)
                     print("🔄 Live Activity updated: \(title) - \(Int(progress * 100))%")
@@ -101,7 +102,7 @@ enum RecipeLiveActivityManager {
         #if canImport(ActivityKit)
         if #available(iOS 16.2, *), let act = activity as? Activity<RecipeActivityAttributes> {
             let currentTitle = act.content.state.title
-            let finalState = RecipeActivityAttributes.ContentState(title: currentTitle, progress: 1)
+            let finalState = RecipeActivityAttributes.ContentState(title: currentTitle, progress: 1, currentItem: act.content.state.currentItem)
             let content = ActivityContent(state: finalState, staleDate: nil)
             await act.end(content, dismissalPolicy: .immediate)
         } else {
