@@ -33,6 +33,7 @@ struct RecipeActivityWidget: Widget {
                     Spacer()
                     Text("\(Int(context.state.progress * 100))%")
                         .font(.title2.monospacedDigit().weight(.semibold))
+                        .kerning(-0.5)
                         .foregroundColor(.primary)
                 }
 
@@ -65,12 +66,13 @@ struct RecipeActivityWidget: Widget {
                             Spacer(minLength: 8)
                             Text("\(Int(context.state.progress * 100))%")
                                 .font(.title3.monospacedDigit().weight(.semibold))
+                                .kerning(-0.5)
                                 .foregroundStyle(.primary)
                         }
                         ProgressView(value: context.state.progress)
                             .progressViewStyle(.linear)
                             .tint(.blue)
-                            .padding(.top, -2)
+                            .padding(.vertical, 0)
                         if let item = context.state.currentItem, !item.isEmpty {
                             HStack(spacing: 6) {
                                 Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
@@ -82,7 +84,8 @@ struct RecipeActivityWidget: Widget {
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .topLeading)
-                    .padding(.top, -8)
+                    .padding(.top, -6)
+                    .padding(.bottom, 6)
                     .padding(.horizontal, 6)
                 }
             } compactLeading: {
@@ -91,6 +94,7 @@ struct RecipeActivityWidget: Widget {
             } compactTrailing: {
                 Text("\(Int(context.state.progress * 100))%")
                     .font(.caption.monospacedDigit())
+                    .kerning(-0.25)
                     .foregroundColor(.white)
             } minimal: {
                 Image(systemName: "fork.knife.circle.fill")
