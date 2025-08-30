@@ -49,6 +49,6 @@ struct StartTimerIntent: SetValueIntent {
 
     func perform() async throws -> some IntentResult {
         // Start / stop the timer based on `value`.
-        return .result()
+        .result()
     }
 }

@@ -6,11 +6,11 @@
 //
 
 import ActivityKit
-import WidgetKit
 import SwiftUI
+import WidgetKit
 
 struct RecipeWidgetsAttributes: ActivityAttributes {
-    public struct ContentState: Codable, Hashable {
+    struct ContentState: Codable, Hashable {
         // Dynamic stateful properties about your activity go here!
         var emoji: String
     }
@@ -56,24 +56,24 @@ struct RecipeWidgetsLiveActivity: Widget {
     }
 }
 
-extension RecipeWidgetsAttributes {
-    fileprivate static var preview: RecipeWidgetsAttributes {
+private extension RecipeWidgetsAttributes {
+    static var preview: RecipeWidgetsAttributes {
         RecipeWidgetsAttributes(name: "World")
     }
 }
 
-extension RecipeWidgetsAttributes.ContentState {
-    fileprivate static var smiley: RecipeWidgetsAttributes.ContentState {
+private extension RecipeWidgetsAttributes.ContentState {
+    static var smiley: RecipeWidgetsAttributes.ContentState {
         RecipeWidgetsAttributes.ContentState(emoji: "😀")
-     }
-     
-     fileprivate static var starEyes: RecipeWidgetsAttributes.ContentState {
-         RecipeWidgetsAttributes.ContentState(emoji: "🤩")
-     }
+    }
+
+    static var starEyes: RecipeWidgetsAttributes.ContentState {
+        RecipeWidgetsAttributes.ContentState(emoji: "🤩")
+    }
 }
 
 #Preview("Notification", as: .content, using: RecipeWidgetsAttributes.preview) {
-   RecipeWidgetsLiveActivity()
+    RecipeWidgetsLiveActivity()
 } contentStates: {
     RecipeWidgetsAttributes.ContentState.smiley
     RecipeWidgetsAttributes.ContentState.starEyes

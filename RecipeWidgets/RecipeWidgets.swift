@@ -1,14 +1,14 @@
-import WidgetKit
-import SwiftUI
 import ActivityKit
+import SwiftUI
+import WidgetKit
 
 // Copy your RecipeActivityAttributes from RecipeActivity.swift
 struct RecipeActivityAttributes: ActivityAttributes {
-    public struct ContentState: Codable, Hashable {
+    struct ContentState: Codable, Hashable {
         var title: String
         var progress: Double
     }
-    
+
     var title: String
 }
 
@@ -34,7 +34,7 @@ struct RecipeActivityWidget: Widget {
                         .font(.title2.monospacedDigit().weight(.semibold))
                         .foregroundColor(.primary)
                 }
-                
+
                 ProgressView(value: context.state.progress)
                     .progressViewStyle(.linear)
                     .tint(.blue)

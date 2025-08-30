@@ -131,7 +131,7 @@ struct ContentView: View {
         let completed = visibleItems.filter { !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && $0.isChecked }.count
         let pct = total > 0 ? Double(completed) / Double(total) : 0
         let pctText = total > 0 ? "\(Int(pct * 100))%" : "0%"
-        
+
         return VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text("Progress")
@@ -296,9 +296,12 @@ struct ContentView: View {
     private func startLiveActivityIfNeeded() async {
         // This is used during generation phase - temporary activity
         guard liveActivity == nil else { return }
-        liveActivity = await RecipeLiveActivityManager.start(title: foodIdea.isEmpty ? "Generating Recipe..." : "Generating \(foodIdea)", progress: 0)
+        liveActivity = await RecipeLiveActivityManager.start(
+            title: foodIdea.isEmpty ? "Generating Recipe..." : "Generating \(foodIdea)",
+            progress: 0
+        )
     }
-    
+
     private func startLiveActivityForRecipe() async {
         // End the generation activity and start the recipe progress activity
         await endLiveActivityIfNeeded()
@@ -315,18 +318,18 @@ struct ContentView: View {
         await RecipeLiveActivityManager.end(activity: liveActivity)
         liveActivity = nil
     }
-    
+
     private func updateProgressAndLiveActivity() {
         let allItems = ingredientItems + stepItems
         let total = allItems.count
         let completed = allItems.filter { !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && $0.isChecked }.count
         let pct = total > 0 ? Double(completed) / Double(total) : 0
-        
+
         Task {
             await updateLiveActivityIfNeeded(pct: pct, title: foodIdea)
-            
+
             // End the Live Activity when recipe is completed (100%)
-            if pct >= 1.0 && total > 0 {
+            if pct >= 1.0, total > 0 {
                 // Wait a moment to show 100% completion
                 try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
                 await endLiveActivityIfNeeded()

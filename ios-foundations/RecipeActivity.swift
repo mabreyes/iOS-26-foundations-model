@@ -28,10 +28,10 @@ enum RecipeLiveActivityManager {
             let attributes = RecipeActivityAttributes(title: title)
             let state = RecipeActivityAttributes.ContentState(title: title, progress: progress)
             let content = ActivityContent(state: state, staleDate: nil)
-            
+
             let authInfo = ActivityAuthorizationInfo()
             print("🔴 Live Activity Authorization Status: \(authInfo.areActivitiesEnabled)")
-            
+
             if authInfo.areActivitiesEnabled {
                 do {
                     let activity = try Activity<RecipeActivityAttributes>.request(attributes: attributes, content: content, pushType: nil)
@@ -49,10 +49,10 @@ enum RecipeLiveActivityManager {
             if #available(iOS 16.1, *) {
                 let attributes = RecipeActivityAttributes(title: title)
                 let state = RecipeActivityAttributes.ContentState(title: title, progress: progress)
-                
+
                 let authInfo = ActivityAuthorizationInfo()
                 print("🔴 Live Activity Authorization Status: \(authInfo.areActivitiesEnabled)")
-                
+
                 if authInfo.areActivitiesEnabled {
                     do {
                         let activity = try Activity<RecipeActivityAttributes>.request(attributes: attributes, contentState: state)

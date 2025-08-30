@@ -3,15 +3,15 @@ import SwiftUI
 struct ChecklistRow: View {
     @Binding var item: RecipeItem
     let onToggle: (() -> Void)?
-    
+
     init(item: Binding<RecipeItem>, onToggle: (() -> Void)? = nil) {
         self._item = item
         self.onToggle = onToggle
     }
-    
+
     var body: some View {
         HStack(spacing: 12) {
-            Button(action: { 
+            Button(action: {
                 item.isChecked.toggle()
                 onToggle?()
             }) {
@@ -29,14 +29,19 @@ struct DeletableChecklistRow: View {
     let kind: RecipeSectionKind
     let onRequestDelete: (_ kind: RecipeSectionKind, _ id: UUID) -> Void
     let onToggle: (() -> Void)?
-    
-    init(item: Binding<RecipeItem>, kind: RecipeSectionKind, onRequestDelete: @escaping (_ kind: RecipeSectionKind, _ id: UUID) -> Void, onToggle: (() -> Void)? = nil) {
+
+    init(
+        item: Binding<RecipeItem>,
+        kind: RecipeSectionKind,
+        onRequestDelete: @escaping (_ kind: RecipeSectionKind, _ id: UUID) -> Void,
+        onToggle: (() -> Void)? = nil
+    ) {
         self._item = item
         self.kind = kind
         self.onRequestDelete = onRequestDelete
         self.onToggle = onToggle
     }
-    
+
     var body: some View {
         ChecklistRow(item: $item, onToggle: onToggle)
             .swipeActions(edge: .trailing, allowsFullSwipe: true) {

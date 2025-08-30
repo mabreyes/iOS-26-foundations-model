@@ -5,8 +5,8 @@
 //  Created by Marc on 8/30/25.
 //
 
-import WidgetKit
 import SwiftUI
+import WidgetKit
 
 @main
 struct RecipeWidgetsBundle: WidgetBundle {
