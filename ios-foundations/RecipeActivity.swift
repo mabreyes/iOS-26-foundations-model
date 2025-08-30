@@ -102,7 +102,11 @@ enum RecipeLiveActivityManager {
         #if canImport(ActivityKit)
         if #available(iOS 16.2, *), let act = activity as? Activity<RecipeActivityAttributes> {
             let currentTitle = act.content.state.title
-            let finalState = RecipeActivityAttributes.ContentState(title: currentTitle, progress: 1, currentItem: act.content.state.currentItem)
+            let finalState = RecipeActivityAttributes.ContentState(
+                title: currentTitle,
+                progress: 1,
+                currentItem: act.content.state.currentItem
+            )
             let content = ActivityContent(state: finalState, staleDate: nil)
             await act.end(content, dismissalPolicy: .immediate)
         } else {
