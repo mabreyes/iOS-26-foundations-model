@@ -53,3 +53,11 @@ playground.xcworkspace
 # SwiftPM/Xcode cache artifacts
 .swiftpm/xcode/package.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
 .swiftpm/xcode/xcshareddata/IDEWorkspaceChecks.plist
+
+# Backup files
+*.bak
+*.tmp
+*~
+
+# Additional Xcode user-specific files
+*.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings
