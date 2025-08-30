@@ -1,8 +1,8 @@
-# iOS Foundations
+# Receipt AI Generator with Apple Foundation Models
 
-A minimal SwiftUI app with Git pre-commit hooks for formatting and linting.
+A SwiftUI app that turns a food idea into structured ingredients and recipe suggestions with Apple Foundation Models.
 
-This app is a recipe generator that uses iOS 26 Foundation Models to suggest and refine recipes. See [Apple Foundation Models documentation](https://developer.apple.com/documentation/FoundationModels).
+See Apple's documentation: [Apple Foundation Models](https://developer.apple.com/documentation/FoundationModels).
 
 ## Requirements
 - Xcode (latest stable recommended)
@@ -43,7 +43,7 @@ exec swiftlint --strict
 ## Project structure
 - `ios_foundationsApp.swift`: App entry point
 - `ContentView.swift`: Main SwiftUI view
-- `RecipeParser.swift`: Sample logic/model
+- Receipt parsing and recipe suggestion logic: `RecipeParser.swift`, `RecipeGenerator.swift`
 - `Assets.xcassets/`: App assets
 - `scripts/run-swiftlint.sh`: SwiftLint wrapper for hooks
 - `.{swiftlint.yml, swiftformat, pre-commit-config.yaml}`: Tool configs

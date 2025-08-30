@@ -44,7 +44,6 @@ enum RecipeGenerator {
         if ings.isEmpty, steps.isEmpty {
             let flat = RecipeParser.parseRecipeItems(from: text).map { RecipeItem(text: $0) }
             if flat.isEmpty {
-                // Safety-related or empty content: retry once with stricter safety
                 if attempt == 0 {
                     let safer = instructions + "\n" + """
                     STRICT SAFETY: Keep content universally safe. Do not include hazardous activities; phrase cutting/slicing as careful, standard culinary technique.

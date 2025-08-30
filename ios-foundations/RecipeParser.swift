@@ -20,14 +20,12 @@ enum RecipeParser {
                         l = regex.stringByReplacingMatches(in: l, range: NSRange(location: 0, length: l.utf16.count), withTemplate: "")
                     }
                 }
-                // Trim common markdown emphasis and trailing punctuation (e.g., **Ingredients:**)
                 let punctuation = CharacterSet(charactersIn: "*_`~:;—- ")
                 l = l.trimmingCharacters(in: punctuation.union(.whitespacesAndNewlines))
                 return l.trimmingCharacters(in: .whitespacesAndNewlines)
             }
             .filter { line in
                 let lower = line.lowercased()
-                // Normalize by trimming punctuation/emphasis around headings
                 let norm = lower.trimmingCharacters(in: CharacterSet(charactersIn: " :*-_`~!()[]{}.,\"'\t").union(.whitespacesAndNewlines))
                 let bannedWords = [
                     "sure!", "here's", "here is", "recipe:",
@@ -39,6 +37,7 @@ enum RecipeParser {
                 if bannedWords.contains(where: { norm == $0 || norm.hasPrefix($0) }) { return false }
                 return true
             }
+            .filter { !$0.isEmpty }
         return cleaned
     }
 

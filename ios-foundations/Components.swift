@@ -2,9 +2,19 @@ import SwiftUI
 
 struct ChecklistRow: View {
     @Binding var item: RecipeItem
+    let onToggle: (() -> Void)?
+
+    init(item: Binding<RecipeItem>, onToggle: (() -> Void)? = nil) {
+        self._item = item
+        self.onToggle = onToggle
+    }
+
     var body: some View {
         HStack(spacing: 12) {
-            Button(action: { item.isChecked.toggle() }) {
+            Button(action: {
+                item.isChecked.toggle()
+                onToggle?()
+            }) {
                 Image(systemName: item.isChecked ? "checkmark.circle.fill" : "circle")
                     .foregroundStyle(item.isChecked ? .green : .secondary)
             }
@@ -18,8 +28,22 @@ struct DeletableChecklistRow: View {
     @Binding var item: RecipeItem
     let kind: RecipeSectionKind
     let onRequestDelete: (_ kind: RecipeSectionKind, _ id: UUID) -> Void
+    let onToggle: (() -> Void)?
+
+    init(
+        item: Binding<RecipeItem>,
+        kind: RecipeSectionKind,
+        onRequestDelete: @escaping (_ kind: RecipeSectionKind, _ id: UUID) -> Void,
+        onToggle: (() -> Void)? = nil
+    ) {
+        self._item = item
+        self.kind = kind
+        self.onRequestDelete = onRequestDelete
+        self.onToggle = onToggle
+    }
+
     var body: some View {
-        ChecklistRow(item: $item)
+        ChecklistRow(item: $item, onToggle: onToggle)
             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                 Button("Delete", role: .destructive) {
                     onRequestDelete(kind, item.id)
@@ -109,7 +133,24 @@ struct AIPillTabs<T: Hashable & CaseIterable & Identifiable & CustomStringConver
         .padding(6)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(AITheme.gradient.opacity(0.15))
+                .fill(Color.accentColor.opacity(0.12))
         )
+    }
+}
+
+struct AIProgressBar: View {
+    let progress: Double
+    var body: some View {
+        GeometryReader { geo in
+            let width = max(0, min(1, progress)) * geo.size.width
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(Color.secondary.opacity(0.15))
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(Color.accentColor)
+                    .frame(width: width)
+            }
+        }
+        .frame(height: 10)
     }
 }

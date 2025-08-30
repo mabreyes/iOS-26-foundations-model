@@ -1,18 +1,12 @@
 import SwiftUI
 
 enum AITheme {
-    static let gradient = LinearGradient(
-        colors: [
-            Color(red: 0.46, green: 0.29, blue: 0.96),
-            Color(red: 0.07, green: 0.56, blue: 0.99),
-            Color(red: 0.00, green: 0.86, blue: 0.72)
-        ],
-        startPoint: .topLeading,
-        endPoint: .bottomTrailing
-    )
+    static let gradient: Color = .accentColor
 }
 
 struct GradientButtonStyle: ButtonStyle {
+    var isAnimating: Bool = false
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding(.vertical, 12)
