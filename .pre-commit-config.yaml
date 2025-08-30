@@ -1,0 +1,23 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+  - repo: local
+    hooks:
+      - id: swiftformat
+        name: SwiftFormat
+        entry: swiftformat
+        language: system
+        files: \.swift$
+        stages: [pre-commit]
+      - id: swiftlint
+        name: SwiftLint
+        entry: scripts/run-swiftlint.sh
+        language: system
+        args: ["--strict"]
+        stages: [pre-commit]

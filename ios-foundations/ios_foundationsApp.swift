@@ -1,10 +1,3 @@
-//
-//  ios_foundationsApp.swift
-//  ios-foundations
-//
-//  Created by Marc on 7/23/25.
-//
-
 import SwiftUI
 
 @main

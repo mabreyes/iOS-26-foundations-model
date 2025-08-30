@@ -6,33 +6,126 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		499374B72E62CF660011D1B6 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49A4267C2E5D30A7006DC02E /* WidgetKit.framework */; };
+		499374B92E62CF660011D1B6 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 499374B82E62CF660011D1B6 /* SwiftUI.framework */; };
+		499374C82E62CF670011D1B6 /* RecipeWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 499374B62E62CF650011D1B6 /* RecipeWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		49A4267E2E5D30AB006DC02E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49A4267C2E5D30A7006DC02E /* WidgetKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		499374C62E62CF670011D1B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 49F2F2FA2E30A6DF0090B6BB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 499374B52E62CF650011D1B6;
+			remoteInfo = RecipeWidgetsExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		49A4267A2E5D2FD6006DC02E /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				499374C82E62CF670011D1B6 /* RecipeWidgetsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		49A426802E5D30AB006DC02E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		499374B62E62CF650011D1B6 /* RecipeWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RecipeWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		499374B82E62CF660011D1B6 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		49A4267C2E5D30A7006DC02E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		49F2F3022E30A6DF0090B6BB /* ios-foundations.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-foundations.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		499374CC2E62CF670011D1B6 /* Exceptions for "RecipeWidgets" folder in "RecipeWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 499374B52E62CF650011D1B6 /* RecipeWidgetsExtension */;
+		};
+		49A426822E5D30B5006DC02E /* Exceptions for "ios-foundations" folder in "ios-foundations" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 49F2F3012E30A6DF0090B6BB /* ios-foundations */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		499374BA2E62CF660011D1B6 /* RecipeWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				499374CC2E62CF670011D1B6 /* Exceptions for "RecipeWidgets" folder in "RecipeWidgetsExtension" target */,
+			);
+			path = RecipeWidgets;
+			sourceTree = "<group>";
+		};
 		49F2F3042E30A6DF0090B6BB /* ios-foundations */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				49A426822E5D30B5006DC02E /* Exceptions for "ios-foundations" folder in "ios-foundations" target */,
+			);
 			path = "ios-foundations";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		499374B32E62CF650011D1B6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				499374B92E62CF660011D1B6 /* SwiftUI.framework in Frameworks */,
+				499374B72E62CF660011D1B6 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		49F2F2FF2E30A6DF0090B6BB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49A4267E2E5D30AB006DC02E /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		49A4267B2E5D30A6006DC02E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				49A4267C2E5D30A7006DC02E /* WidgetKit.framework */,
+				499374B82E62CF660011D1B6 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		49F2F2F92E30A6DF0090B6BB = {
 			isa = PBXGroup;
 			children = (
 				49F2F3042E30A6DF0090B6BB /* ios-foundations */,
+				499374BA2E62CF660011D1B6 /* RecipeWidgets */,
+				49A4267B2E5D30A6006DC02E /* Frameworks */,
 				49F2F3032E30A6DF0090B6BB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +134,7 @@
 			isa = PBXGroup;
 			children = (
 				49F2F3022E30A6DF0090B6BB /* ios-foundations.app */,
+				499374B62E62CF650011D1B6 /* RecipeWidgetsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +142,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		499374B52E62CF650011D1B6 /* RecipeWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 499374C92E62CF670011D1B6 /* Build configuration list for PBXNativeTarget "RecipeWidgetsExtension" */;
+			buildPhases = (
+				499374B22E62CF650011D1B6 /* Sources */,
+				499374B32E62CF650011D1B6 /* Frameworks */,
+				499374B42E62CF650011D1B6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				499374BA2E62CF660011D1B6 /* RecipeWidgets */,
+			);
+			name = RecipeWidgetsExtension;
+			packageProductDependencies = (
+			);
+			productName = RecipeWidgetsExtension;
+			productReference = 499374B62E62CF650011D1B6 /* RecipeWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		49F2F3012E30A6DF0090B6BB /* ios-foundations */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 49F2F30D2E30A6E10090B6BB /* Build configuration list for PBXNativeTarget "ios-foundations" */;
@@ -55,10 +171,13 @@
 				49F2F2FE2E30A6DF0090B6BB /* Sources */,
 				49F2F2FF2E30A6DF0090B6BB /* Frameworks */,
 				49F2F3002E30A6DF0090B6BB /* Resources */,
+				49A4267A2E5D2FD6006DC02E /* Embed Foundation Extensions */,
+				49A426802E5D30AB006DC02E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				499374C72E62CF670011D1B6 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				49F2F3042E30A6DF0090B6BB /* ios-foundations */,
@@ -80,6 +199,9 @@
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					499374B52E62CF650011D1B6 = {
+						CreatedOnToolsVersion = 26.0;
+					};
 					49F2F3012E30A6DF0090B6BB = {
 						CreatedOnToolsVersion = 26.0;
 					};
@@ -100,11 +222,19 @@
 			projectRoot = "";
 			targets = (
 				49F2F3012E30A6DF0090B6BB /* ios-foundations */,
+				499374B52E62CF650011D1B6 /* RecipeWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		499374B42E62CF650011D1B6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		49F2F3002E30A6DF0090B6BB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +245,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		499374B22E62CF650011D1B6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		49F2F2FE2E30A6DF0090B6BB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +261,75 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		499374C72E62CF670011D1B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 499374B52E62CF650011D1B6 /* RecipeWidgetsExtension */;
+			targetProxy = 499374C62E62CF670011D1B6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		499374CA2E62CF670011D1B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 73J2FJKYTU;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RecipeWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RecipeWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "xyz.marcr.ios-foundations.RecipeWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		499374CB2E62CF670011D1B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 73J2FJKYTU;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RecipeWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RecipeWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "xyz.marcr.ios-foundations.RecipeWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		49F2F30B2E30A6E10090B6BB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -251,8 +456,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 73J2FJKYTU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ios-foundations/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Recipe AI";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -282,8 +490,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 73J2FJKYTU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ios-foundations/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Recipe AI";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -309,6 +520,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		499374C92E62CF670011D1B6 /* Build configuration list for PBXNativeTarget "RecipeWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				499374CA2E62CF670011D1B6 /* Debug */,
+				499374CB2E62CF670011D1B6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		49F2F2FD2E30A6DF0090B6BB /* Build configuration list for PBXProject "ios-foundations" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
